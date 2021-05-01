@@ -1,1 +1,1 @@
-# GitTImeline
+# GitTimeline

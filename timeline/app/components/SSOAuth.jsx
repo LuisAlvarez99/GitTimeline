@@ -3,7 +3,7 @@
 // import { React } from 'react'
 import { redirect } from "next/navigation"
 
-export default function ssoGitHub() {
+export default async function ssoGitHub() {
     return(
         <button 
                 type="button" 

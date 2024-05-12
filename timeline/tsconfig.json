@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/timeline/page.jsx", "app/page.jsx", "app/layout.tsx", "app/components/SSOAuth.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/timeline/page.jsx", "app/page.jsx", "app/layout.tsx", "app/components/auth/signin-button.jsx"],
   "exclude": ["node_modules"]
 }

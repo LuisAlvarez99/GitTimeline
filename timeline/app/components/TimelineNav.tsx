@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import { SignOut } from './auth/signout-button'
 
 
 export default function TimelineNav() {
@@ -9,9 +10,9 @@ export default function TimelineNav() {
             <a className='self-center' href='/'>
                 <Image className='size-8' width={10} height={10} src="/home.svg" />    
             </a>
-            <a className='self-center' href='/api/auth/signout?callbackUrl=/'>
-                <Image className='size-8' width={10} height={10} src="/singout.svg" />    
-            </a>
+            <SignOut>
+                <Image className='size-8' width={10} height={10} src="/signout.svg" />    
+            </SignOut>
         </div>
     )
 }

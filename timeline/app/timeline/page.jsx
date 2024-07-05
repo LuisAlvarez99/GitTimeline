@@ -3,17 +3,7 @@ import Image from 'next/image'
 import TimelineNav from "../components/TimelineNav"
 import { auth } from "../auth"
 import { Octokit } from '@octokit/core'
-import { Link } from 'next/link'
-
-// async function getToken() {
-//     const csrfToken = await fetch("http://localhost:3000/api/auth/csrf")
-    
-//     if(!csrfToken.ok) {
-//         throw new Error('Failed to fetch data')
-//     }
-    
-//     return csrfToken.json()
-// }
+import Link from 'next/Link'
 
 let userRepos = []
 
@@ -25,49 +15,47 @@ export default async function Timeline() {
     const octokit = new Octokit({
         auth: token
     });
-    const sessionUser = session.user.name;
+
     
-    // Fetch repositories for a specific user
+    // Fetch repositories for a specific user and store in an array
     async function getUserRepositories(username) {
       try {
         const response = await octokit.request(`GET /users/${username}/repos`, {
           username: username
         });
-        const repos = response.data;
-        userRepos = repos.map(repo => repo.name);
-        return repos;
-      } catch (error) {
+        // const repos = response.data;
+        return response.data;
+        } catch (error) {
         console.error("Error fetching repositories:", error);
         throw error;
-      }
+        }
     }
-    
-    getUserRepositories("LuisAlvarez99")
-    .then(repos => {
-        // console.log("User's repositories:", userRepos);
-            // for (let repo of repos) {
-            //     userRepos.push(repo["name"]);
-            // }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-        });
-        
-        
-    let randomNodes = [
+    const repos = await getUserRepositories("LuisAlvarez99")
 
-    ];
-    
+    repos.sort((a,b) => {
+        return new Date(b.created_at) - new Date(a.created_at);
+    });
+
+    const formattedRepos = repos.map(repo => {
+        const cretedAt = new Date(repo.created_at);
+        const formattedDate = cretedAt.toLocaleString();
+        const sessionName = session.user.name;
+        // console.log("formattedDate: ", formattedDate);
+        return {...repo, formattedDate: formattedDate, sessionName: sessionName}
+    })
+
+    userRepos = formattedRepos.map(repo => repo.name);
+    let randomNodes = [];
     for ( let node in userRepos) {
         randomNodes.push(userRepos[node]);
     }
-    // randomNodes.push(userRepos);
-    // console.log("repo nodes: ", randomNodes);
-    
-    // const userData = await octokit.rest
-    // const data = octokit.request('GET /users/LuisAlvarez99/repos');
-    // const data = octokit.rest.issues.listLabelsForRepo();
-    
+    // repos.map(repo => {
+    //     console.log(repo.created_at);
+    // })
+    // console.log("LOGGING REPO DATA: ",Object.getOwnPropertyNames(repos));
+    console.log("LOGGING OWNER DATA: ",formattedRepos[0].sessionName);
+
+
     // const randomNodes = [
         
         
@@ -163,20 +151,20 @@ export default async function Timeline() {
     return(
         // <div className="bg-slate-700 h-screen">
         <div className="flex flex-col h-full w-auto bg-slate-700">
-            <TimelineNav />    
+            <TimelineNav user={session.user.name} />    
             <div  className="flex h-full justify-start items-center overflow-x-scroll">
-
-                {randomNodes.map((node,i) => 
-                    <Link href={`/repos/${node}`} as={`/repos/${node}`} key={i} passHref>
-                        <a>
-                            <div className=" w-5 h-1 m-1 bg-green-400"></div>
-                        </a>
+                {formattedRepos.map((repo,i) => 
+                    <Link href={`/repos/${repo.name}?repo=${JSON.stringify(repo)}`} key={i}>
+                        <div className=" w-5 h-1 m-1 bg-green-400"></div>
                     </Link>
-                )}
-                
+                )}              
+                {/* {formattedRepos.map((repo,i) => 
+                    <Link href={`/repos/${repo.name}?repo=${JSON.stringify(repo)}`} key={i}>
+                        <div className=" w-5 h-1 m-1 bg-green-400"></div>
+                    </Link>
+                )}               */}
             </div>
         </div>
         // </div>
     )
-    
 }

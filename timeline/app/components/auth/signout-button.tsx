@@ -1,14 +1,7 @@
-import { signOut } from "../../auth.ts"
+'use client'
+import { signOut } from "next-auth/react"
+import Image from "next/image"
 
 export function SignOut() {
-    return (
-        <form
-            action={async () => {
-                "use server"
-                await signOut({redirectTo: "/"})
-            }}
-        >
-            <button type="submit">Sign Out</button>
-        </form>
-    )
+    return <button onClick={() => signOut({callbackUrl: '/'})}><Image className='size-8' width={10} height={10} src="/signout.svg" /></button>
 }
